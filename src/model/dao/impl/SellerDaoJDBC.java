@@ -46,14 +46,13 @@ public class SellerDaoJDBC implements SellerDao {
 
 			int rowsAffected = st.executeUpdate();
 
-			
 			if (rowsAffected > 0) {
 				ResultSet rs = st.getGeneratedKeys();
 				if (rs.next()) {
 					// Insere o novo ID dentro do OBJ
 					int id = rs.getInt(1);
 					obj.setId(id);
-					
+
 				}
 			} else {
 				throw new DbException("Unexpected error! No rows affected");
@@ -73,9 +72,8 @@ public class SellerDaoJDBC implements SellerDao {
 
 		try {
 
-			st = conn.prepareStatement("UPDATE seller " 
-			+ " SET Name= ?, Email=?, BirthDate=?, BaseSalary=?, DepartmentId=? "
-					+ "WHERE Id = ?");
+			st = conn.prepareStatement("UPDATE seller "
+					+ " SET Name= ?, Email=?, BirthDate=?, BaseSalary=?, DepartmentId=? " + "WHERE Id = ?");
 
 			st.setString(1, obj.getName());
 			st.setString(2, obj.getEmail());
@@ -86,7 +84,7 @@ public class SellerDaoJDBC implements SellerDao {
 			st.setInt(6, obj.getId());
 
 			st.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
@@ -97,6 +95,20 @@ public class SellerDaoJDBC implements SellerDao {
 	@Override
 	public void deleteById(Integer id) {
 
+		PreparedStatement st = null;
+
+		try {
+
+			st = conn.prepareStatement("DELETE FROM seller WHERE Id = ?");
+
+			st.setInt(1, id);
+			st.executeUpdate();
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
